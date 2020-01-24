@@ -30,22 +30,19 @@
 }:
 
 let
+    version = "2.1.19";
+
     # when updating, also update rev-manual to a recent version of
     # https://github.com/dae/ankidocs
     # The manual is distributed independently of the software.
-    version = "2.1.15";
-    sha256-pkg = "12dvyf3j9df4nrhhnqbzd9b21rpzkh4i6yhhangn2zf7ch0pclss";
-    rev-manual = "8f6387867ac37ef3fe9d0b986e70f898d1a49139";
-    sha256-manual = "0pm5slxn78r44ggvbksz7rv9hmlnsvn9z811r6f63dsc8vm6mfml";
-
     manual = stdenv.mkDerivation {
       pname = "anki-manual";
       inherit version;
       src = fetchFromGitHub {
-        owner = "dae";
-        repo = "ankidocs";
-        rev = rev-manual;
-        sha256 = sha256-manual;
+        owner = "ankitects";
+        repo = "anki-docs";
+        rev = "d0d993d54932348b74b8e39cdca540195d99c56d";
+        sha256 = "15z2ibrgib5mjgb85gxizs88dmjbnpzs9gdg6z3sx64xi7ckzq6y";
       };
       phases = [ "unpackPhase" "patchPhase" "buildPhase" ];
       nativeBuildInputs = [ asciidoc ];
@@ -74,14 +71,11 @@ buildPythonApplication rec {
     pname = "anki";
     inherit version;
 
-    src = fetchurl {
-      urls = [
-        "https://apps.ankiweb.net/downloads/current/${pname}-${version}-source.tgz"
-        # "https://apps.ankiweb.net/downloads/current/${name}-source.tgz"
-        # "http://ankisrs.net/download/mirror/${name}.tgz"
-        # "http://ankisrs.net/download/mirror/archive/${name}.tgz"
-      ];
-      sha256 = sha256-pkg;
+    src = fetchFromGitHub {
+      owner = "ankitects";
+      repo = pname;
+      rev = version;
+      sha256 = "0lcm13dcjg8xl5id47vi7h6np3vgh5wrn2w0cqfw6as2ff28bn0j";
     };
 
     outputs = [ "out" "doc" "man" ];
@@ -118,9 +112,9 @@ buildPythonApplication rec {
       rm "locale/"*.qm
 
       # hitting F1 should open the local manual
-      substituteInPlace anki/consts.py \
-        --replace 'HELP_SITE="http://ankisrs.net/docs/manual.html"' \
-                  'HELP_SITE="${manual}/share/doc/anki/html/manual.html"'
+      substituteInPlace pylib/anki/consts.py \
+        --replace 'HELP_SITE = "http://ankisrs.net/docs/manual.html"' \
+                  'HELP_SITE = "${manual}/share/doc/anki/html/manual.html"'
     '';
 
     # UTF-8 locale needed for testing
@@ -150,11 +144,11 @@ buildPythonApplication rec {
       EOF
       chmod 755 $out/bin/anki
 
-      cp -v anki.desktop $out/share/applications/
+      cp -v qt/anki.desktop $out/share/applications/
       cp -v README* LICENSE* $doc/share/doc/anki/
-      cp -v anki.1 $man/share/man/man1/
-      cp -v anki.xml $out/share/mime/packages/
-      cp -v anki.{png,xpm} $out/share/pixmaps/
+      cp -v qt/anki.1 $man/share/man/man1/
+      cp -v qt/anki.xml $out/share/mime/packages/
+      cp -v qt/anki.{png,xpm} $out/share/pixmaps/
       cp -rv locale $out/share/
       cp -rv anki aqt web $pp/
 

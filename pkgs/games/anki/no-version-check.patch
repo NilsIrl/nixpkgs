@@ -1,13 +1,14 @@
-diff -Nurp anki-2.0.33.orig/aqt/main.py anki-2.0.33/aqt/main.py
---- anki-2.0.33.orig/aqt/main.py	2016-01-05 21:37:53.904533750 +0100
-+++ anki-2.0.33/aqt/main.py	2016-01-05 21:39:11.469175976 +0100
-@@ -820,6 +820,9 @@ title="%s">%s</button>''' % (
+diff --git a/qt/aqt/main.py b/qt/aqt/main.py
+index 3604165..6889559 100644
+--- a/qt/aqt/main.py
++++ b/qt/aqt/main.py
+@@ -1101,6 +1101,9 @@ title="%s" %s>%s</button>""" % (
      ##########################################################################
  
-     def setupAutoUpdate(self):
-+        # Don't check for latest version since the versions are
-+        # managed in Nixpkgs.
+     def setupAutoUpdate(self) -> None:
++        # Don't check for the latest versions since versions are managed by
++        # Nixpkgs
 +        return
          import aqt.update
+ 
          self.autoUpdate = aqt.update.LatestVersionFinder(self)
-         self.connect(self.autoUpdate, SIGNAL("newVerAvail"), self.newVerAvail)
