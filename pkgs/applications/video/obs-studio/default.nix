@@ -22,6 +22,7 @@
 , pkg-config
 , libvlc
 , mbedtls
+, wayland
 
 , scriptingSupport ? true
 , luajit
@@ -40,13 +41,13 @@ let
 
 in mkDerivation rec {
   pname = "obs-studio";
-  version = "26.1.2";
+  version = "wayland";
 
   src = fetchFromGitHub {
     owner = "obsproject";
     repo = "obs-studio";
-    rev = version;
-    sha256 = "1plr5a7k5scxlibhbknhhk19ipk8las14dzs7v64zx7rhpj00009";
+    rev = "81a89e689fb36bd24b47c5806d09438e3d82ece3";
+    sha256 = "1kx6z3i27zx5msqqdgp28xc2nzj380bk4f725jch8grpj1dx889n";
     fetchSubmodules = true;
   };
 
@@ -71,6 +72,7 @@ in mkDerivation rec {
     libvlc
     makeWrapper
     mbedtls
+    wayland
   ]
   ++ optionals scriptingSupport [ luajit swig python3 ]
   ++ optional alsaSupport alsaLib
